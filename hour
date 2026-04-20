@@ -1,0 +1,16 @@
+def calculate_work_records(T, H_total):
+   # Step 1: Solve for D using the derived formula: 23D = H_total - T
+   D = (H_total - T) / 23
+   # Step 2: Solve for H using: H = T - D
+   H = T - D
+   return D, H
+# Input getting code
+try:
+   T_value = float(input("Enter the T_value: "))
+   H_total_value = float(input("Enter the H_total_value: "))
+   # Calculation
+   D, H = calculate_work_records(T_value, H_total_value)
+   # Output results using f-string for formatting
+   print(f"D = {D:.2f}, H = {H:.2f}")
+except ValueError:
+   print("Invalid input. Please enter numeric values.")
