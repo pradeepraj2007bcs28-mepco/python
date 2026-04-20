@@ -1,0 +1,4 @@
+l,b=[int(i) for i in input("Enter the two numbers:").split(',')]
+if 1<= l and b<=100:
+   n=l*b
+   print("Area of a rectangle is %d"%n)
