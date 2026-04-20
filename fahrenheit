@@ -1,0 +1,5 @@
+c,f=[int(i) for i in input("enter the number:").split(',')]
+if -50<= c and c <= 100:
+   c=30
+   F=(c*9/5)+32
+   print("Temperature and fahrenheit is %d"%F)
