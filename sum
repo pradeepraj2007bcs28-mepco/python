@@ -1,0 +1,6 @@
+a,b, =[int(i) for i in input("Enter two numbers:").split(',')]
+if a<=0 and b<=1000:
+   a=20
+   b=30
+   c= a + b
+print( "sum of a and b is:",c)
