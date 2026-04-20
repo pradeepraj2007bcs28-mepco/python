@@ -1,0 +1,5 @@
+m,seconds=[int (i) for i in input("Enter the seconds:").split(',')]
+if 0<=m and m<= 1000:
+   m = 20
+   seconds=m*60
+   print("Number of seconds is:%d"%seconds)
