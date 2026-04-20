@@ -1,0 +1,19 @@
+n = input("Enter your IP address: ")
+parts = n.split(".")
+isvalid = True
+if len(parts) != 4:
+    isvalid = False
+else:
+    for i in parts:
+        if not i.isdigit():
+            isvalid = False
+            break
+        num = int(i)
+        if num < 0 or num > 255:
+            isvalid = False
+            break
+
+if isvalid==True:
+    print("Valid")
+else:
+    print("invalid")
