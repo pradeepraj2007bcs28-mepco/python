@@ -1,0 +1,26 @@
+def solve():
+    try:
+        line = input().split()
+        if not line: return
+        t = int(line[0]) # Number of test cases
+
+        for _ in range(t):
+            n = int(input()) # Number of rows
+            triangle = []
+            for _ in range(n):
+                triangle.append(list(map(int, input().split())))
+
+            # Process from the bottom-up
+            # Start from the second-to-last row (n-2) down to the first (0)
+            for i in range(n - 2, -1, -1):
+                for j in range(len(triangle[i])):
+                    # For each element, add the maximum of the two elements below it
+                    triangle[i][j] += max(triangle[i+1][j], triangle[i+1][j+1])
+
+            # The top element now holds the maximum path sum
+            print(triangle[0][0])
+    except EOFError:
+        pass
+
+if __name__ == "__main__":
+    solve()
