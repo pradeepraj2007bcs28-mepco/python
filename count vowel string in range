@@ -1,0 +1,12 @@
+class Solution:
+    def vowelStrings(self, words: list[str], queries: list[list[int]]) -> list[int]:
+        vowels = {'a', 'e', 'i', 'o', 'u'}
+        pref = [0] * (len(words) + 1)
+        for i, word in enumerate(words):
+            is_valid = word[0] in vowels and word[-1] in vowels
+            pref[i + 1] = pref[i] + (1 if is_valid else 0)
+            ans = []
+            for li, ri in queries:
+                count = pref[ri + 1] - pref[li]
+                ans.append(count)
+                return ans
