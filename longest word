@@ -1,0 +1,31 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<stdbool.h>
+int compare(const void* a, const void* b) {
+    return strcmp(*(const char**)a, *(const char**)b);
+}
+char* longestWord(char** words, int wordsSize) {
+    qsort(words, wordsSize, sizeof(char*), compare);
+    char* result = "";
+    for (int i = 0; i < wordsSize; i++) {
+        int len = strlen(words[i]);
+        bool has_all_prefixes = true;
+        for (int j = 1; j < len; j++) {
+            char prefix[31];
+            strncpy(prefix, words[i], j);
+            prefix[j] = '\0';
+            char** found = (char**)bsearch(&prefix, words, wordsSize, sizeof char compare);
+            if (!found) {
+                has_all_prefixes = false;
+                break;
+            }
+        }
+        if (has_all_prefixes) {
+            if (len > strlen(result)) {
+                result = words[i];
+            }
+        }
+    }
+    return result;
+}
