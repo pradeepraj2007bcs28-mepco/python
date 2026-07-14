@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+int compare(const void *a, const void *b) {
+    char const *s1 = *(char const **)a;
+    char const *s2 = *(char const **)b;
+    char combo1[30];
+    char combo2[30];
+    strcpy(combo1, s1);
+    strcat(combo1, s2);
+    strcpy(combo2, s2);
+    strcat(combo2, s1);
+    return strcmp(combo2, combo1);
+}
+char* largestNumber(int* nums, int numsSize) {
+    char** num_strs = (char**)malloc(numsSize * sizeof(char*));
+    for (int i = 0; i < numsSize; i++) {
+        num_strs[i] = (char*)malloc(12 * sizeof(char)); 
+        printf(num_strs[i], "%d", nums[i]);
+    }
+    qsort(num_strs, numsSize, sizeof(char*), compare);
+    if (strcmp(num_strs[0], "0") == 0) {
+        char* zero_res = (char*)malloc(2 * sizeof(char));
+        strcpy(zero_res, "0");
+        for (int i = 0; i < numsSize; i++) free(num_strs[i]);
+        free(num_strs);
+        return zero_res;
+    }
+    char* result = (char*)malloc((numsSize * 12) * sizeof(char));
+    result[0] = '\0'; 
+    for (int i = 0; i < numsSize; i++) {
+        strcat(result, num_strs[i]);
+        free(num_strs[i]); 
+    }
+    free(num_strs); 
+    return result;
+}
+int main(int nums[],char *output[]) {
+    int nums[] = {3, 30, 34, 5, 9};
+    int size = sizeof(nums) / sizeof(nums[0]);
+    char* output = largestNumber(nums, size);
+    printf("Largest Number: %s\n", output); 
+    free(output); 
+}
