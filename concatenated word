@@ -1,0 +1,47 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<stdbool.h>
+int compare(const void* a, const void* b) {
+    return strlen(*(const char**)a) - strlen(*(const char**)b);
+}
+bool canForm(const char* word, char** dict, int dictSize, int* memo, int start, int wordLen) {
+    if (start == wordLen) return true;
+    if (memo[start] != -1) return memo[start];
+    char substr[31];
+    for (int i = start; i < wordLen; i++) {
+        int len = i - start + 1;
+        if (start == 0 && len == wordLen) continue; 
+        strncpy(substr, word + start, len);
+        substr[len] = '\0';
+        bool found = false;
+        for (int j = 0; j < dictSize; j++) {
+            if (strcmp(dict[j], substr) == 0) {
+                found = true;
+                break;
+            }
+        }
+        if (found && canForm(word, dict, dictSize, memo, i + 1, wordLen)) {
+            return memo[start] = 1;
+        }
+    }
+    return memo[start] = 0;
+}
+char** findAllConcatenatedWordsInADict(char** words, int wordsSize, int* returnSize) {
+    qsort(words, wordsSize, sizeof(char*), compare);
+    char** result = (char**)malloc(wordsSize * sizeof(char*));
+    *returnSize = 0;
+    for (int i = 0; i < wordsSize; i++) {
+        int len = strlen(words[i]);
+        if (len == 0) continue;
+        int* memo = (int*)malloc(len * sizeof(int));
+        for (int m = 0; m < len; m++) memo[m] = -1;
+        if (canForm(words[i], words, wordsSize, memo, 0, len)) {
+            result[*returnSize] = words[i];
+            (*returnSize)++;
+        }
+        free(memo);
+    }
+    return result;
+}
+
