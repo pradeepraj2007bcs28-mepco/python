@@ -1,0 +1,22 @@
+#include <stdio.h>
+#include <string.h>
+int longestSubstringHelper(const char* s, int start, int end, int k) {
+    if (end - start < k) {
+        return 0; 
+    }
+    int counts[26] = {0};
+    for (int i = start; i < end; i++) {
+        counts[s[i] - 'a']++;
+    }
+    for (int i = start; i < end; i++) {
+        if (counts[s[i] - 'a'] < k) {
+            int left_len = longestSubstringHelper(s, start, i, k);
+            int right_len = longestSubstringHelper(s, i + 1, end, k);
+            return (left_len > right_len) ? left_len : right_len;
+        }
+    }
+    return end - start;
+}
+int longestSubstring(char* s, int k) {
+    return longestSubstringHelper(s, 0, strlen(s), k);
+}
