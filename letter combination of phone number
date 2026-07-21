@@ -1,0 +1,45 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+const char* phone_map[] = {
+    "", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"
+};
+char** letterCombinations(const char* digits, int* returnSize) {
+    int len = strlen(digits);
+    *returnSize = 0;
+    if (len == 0) {
+        return NULL;
+    }
+    const char* s0 = phone_map[digits[0] - '0'];
+    const char* s1 = (len > 1) ? phone_map[digits[1] - '0'] : "";
+    const char* s2 = (len > 2) ? phone_map[digits[2] - '0'] : "";
+    const char* s3 = (len > 3) ? phone_map[digits[3] - '0'] : "";
+    int total_combinations = 1;
+    if (len >= 1) total_combinations *= strlen(s0);
+    if (len >= 2) total_combinations *= strlen(s1);
+    if (len >= 3) total_combinations *= strlen(s2);
+    if (len >= 4) total_combinations *= strlen(s3);
+    char** result = (char**)malloc(total_combinations * sizeof(char*));
+    int count = 0;
+    for (int i = 0; s0[i] != '\0'; i++) {
+        for (int j = 0; (len < 2 && j == 0) || (len >= 2 && s1[j] != '\0'); j++) {
+            for (int k = 0; (len < 3 && k == 0) || (len >= 3 && s2[k] != '\0'); k++) {
+                for (int l = 0; (len < 4 && l == 0) || (len >= 4 && s3[l] != '\0'); l++) {
+                    result[count] = (char*)malloc((len + 1) * sizeof(char));
+                    if (len == 1) {
+                        sprintf(result[count], "%c", s0[i]);
+                    } else if (len == 2) {
+                        sprintf(result[count], "%c%c", s0[i], s1[j]);
+                    } else if (len == 3) {
+                        sprintf(result[count], "%c%c%c", s0[i], s1[j], s2[k]);
+                    } else if (len == 4) {
+                        sprintf(result[count], "%c%c%c%c", s0[i], s1[j], s2[k], s3[l]);
+                    }
+                    count++;
+                }
+            }
+        }
+    }
+    *returnSize = count;
+    return result;
+}
