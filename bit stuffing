@@ -1,0 +1,107 @@
+#include <stdio.h>
+#include <string.h>
+#define FLAG "01111110"
+void printCharAsBinary(char ch, char *outStr)
+{
+    for (int i = 7; i >= 0; i--) {
+        outStr[7 - i] = ((ch >> i) & 1) ? '1' : '0';
+    }
+    outStr[8] = '\0';
+}
+int main()
+{
+    char text[100];
+    char textBinary[800] = "";
+    char stuffed[1200] = "";
+    char destuffed[800] = "";
+    char finalOutputText[100] = "";
+    char errChoice;
+    int errPos;
+    int count = 0;
+    int i, j;
+    printf("Enter text: ");
+    scanf("%s", text);
+    int dataLen = strlen(text);
+    printf("\n=== TRANSMITTER SIDE ===\n");
+    printf("Original Text: %s\n\n", text);
+    printf("--- Text to ASCII to Binary Conversion ---\n");
+    char tempBin[9];
+    for (i = 0; i < dataLen; i++) {
+        printCharAsBinary(text[i], tempBin);
+        strcat(textBinary, tempBin);
+        printf("Character '%c' -> ASCII Decimal: %3d -> Binary: %s\n", text[i], text[i], tempBin);
+    }
+    printf("\nFull Combined Data Stream: %s\n", textBinary);
+    j = 0;
+    count = 0;
+    for (i = 0; textBinary[i] != '\0'; i++) {
+        stuffed[j++] = textBinary[i];
+        if (textBinary[i] == '1') {
+            count++;
+            if (count == 5) {
+                stuffed[j++] = '0'; 
+                count = 0;
+            }
+        } else {
+            count = 0;
+        }
+    }
+    stuffed[j] = '\0';
+    printf("\n--- Final Framed Packet Output ---\n");
+    printf("Framed Packet: %s [%s] %s\n", FLAG, stuffed, FLAG);
+    printf("\nDo you want to induce an error? (Y/N): ");
+    scanf(" %c", &errChoice);
+    if (errChoice == 'Y' || errChoice == 'y') {
+        int stuffedLen = strlen(stuffed);
+        printf("Enter Bit Position to flip (1-%d): ", stuffedLen);
+        scanf("%d", &errPos);
+        if (errPos >= 1 && errPos <= stuffedLen) {
+            if (stuffed[errPos - 1] == '0')
+                stuffed[errPos - 1] = '1';
+            else
+                stuffed[errPos - 1] = '0';
+            printf("\n===== Receiver's Side ======\n");
+            printf("\n--- FRAME AFTER ERROR ---\n");
+            printf("Framed Packet: %s [%s] %s\n", FLAG, stuffed, FLAG);
+            printf("\nTransmission Error Detected\n");
+            printf("Frame Discarded\n");
+            printf("De-Stuffing Not Performed\n");
+            return 0;
+        } else {
+            printf("\nInvalid Position.\n");
+            return 0;
+        }
+    }
+    printf("\n=== RECEIVER SIDE ===\n");
+    j = 0;
+    count = 0;
+    for (i = 0; stuffed[i] != '\0'; i++) {
+        destuffed[j++] = stuffed[i];
+        if (stuffed[i] == '1') {
+            count++;
+            if (count == 5) {
+                i++; 
+                count = 0;
+            }
+        } else {
+            count = 0;
+        }
+    }
+    destuffed[j] = '\0';
+    int destuffedLen = strlen(destuffed);
+    int textIdx = 0;
+    for (i = 0; i < destuffedLen; i += 8) {
+        char characterValue = 0;
+        for (int k = 0; k < 8; k++) {
+            characterValue <<= 1;
+            if (destuffed[i + k] == '1') {
+                characterValue |= 1;
+            }
+        }
+        finalOutputText[textIdx++] = characterValue;
+    }
+    finalOutputText[textIdx] = '\0';
+    printf("After Destuffing: \n\tBinary Stream   : %s\n", destuffed);
+    printf("\tCorrect Destuffed Text: %s\n", finalOutputText);
+    return 0;
+}
