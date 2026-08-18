@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+int checkWindow(const char* stamp, const char* target, int startIdx, int stampLen) {
+    int nonStars = 0;
+    for (int i = 0; i < stampLen; i++) {
+        char targetChar = target[startIdx + i];
+        if (targetChar == '?') {
+            continue; 
+        }
+        if (targetChar != stamp[i]) {
+            return -1; 
+        }
+        nonStars++;
+    }
+    return nonStars;
+}
+int* movesToStamp(char* stamp, char* target, int* returnSize) {
+    int stampLen = strlen(stamp);
+    int targetLen = strlen(target);
+    int maxMoves = 10 * targetLen;
+    int* res = (int*)malloc(maxMoves * sizeof(int));
+    if (!res) {
+        *returnSize = 0;
+        return NULL;
+    }
+    int resCount = 0;
+    int totalStars = 0;
+    int changed = 1;
+    while (changed && totalStars < targetLen) {
+        changed = 0;
+        for (int i = 0; i <= targetLen - stampLen; i++) {
+            int nonStars = checkWindow(stamp, target, i, stampLen);
+            if (nonStars > 0) {
+                for (int j = 0; j < stampLen; j++) {
+                    if (target[i + j] != '?') {
+                        target[i + j] = '?';
+                        totalStars++;
+                    }
+                }
+                res[resCount++] = i;
+                changed = 1;
+                if (totalStars == targetLen) {
+                    break;
+                }
+            }
+        }
+    }
+    if (totalStars == targetLen) {
+        for (int i = 0; i < resCount / 2; i++) {
+            int temp = res[i];
+            res[i] = res[resCount - 1 - i];
+            res[resCount - 1 - i] = temp;
+        }
+        *returnSize = resCount;
+        return res;
+    }
+    free(res);
+    *returnSize = 0;
+    return NULL;
+}
+
