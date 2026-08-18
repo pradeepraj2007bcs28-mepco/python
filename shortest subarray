@@ -1,0 +1,19 @@
+#include <stdio.h>
+#include <stdlib.h>
+int shortestSubarray(int* nums, int numsSize, int k) {
+    int minLen = numsSize + 1;
+    for (int i = 0; i < numsSize; i++) {
+        long long currentSum = 0;
+        for (int j = i; j < numsSize; j++) {
+            currentSum += nums[j];
+            if (currentSum >= k) {
+                int currentLen = j - i + 1;
+                if (currentLen < minLen) {
+                    minLen = currentLen;
+                }
+                break;
+            }
+        }
+    }
+    return (minLen > numsSize) ? -1 : minLen;
+}
