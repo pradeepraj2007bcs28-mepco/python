@@ -1,0 +1,64 @@
+#include<stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+int* diffWaysToCompute(char* expression, int* returnSize) {
+    int len = strlen(expression);
+    int capacity = 1024;
+    int* results = (int*)malloc(capacity * sizeof(int));
+    int count = 0;
+    bool isNumber = true;
+    for (int i = 0; i < len; i++) {
+        char c = expression[i];
+        if (c == '+' || c == '-' || c == '*') {
+            isNumber = false;
+            char* leftSub = (char*)malloc((i + 1) * sizeof(char));
+            strncpy(leftSub, expression, i);
+            leftSub[i] = '\0';
+            char* rightSub = (char*)malloc((len - i) * sizeof(char));
+            strcpy(rightSub, expression + i + 1);
+            int leftSize = 0;
+            int rightSize = 0;
+            int* leftResults = diffWaysToCompute(leftSub, &leftSize);
+            int* rightResults = diffWaysToCompute(rightSub, &rightSize);
+            for (int l = 0; l < leftSize; l++) {
+                for (int r = 0; r < rightSize; r++) {
+                    if (count >= capacity) {
+                        capacity *= 2;
+                        results = (int*)realloc(results, capacity * sizeof(int));
+                    }
+                    if (c == '+') {
+                        results[count++] = leftResults[l] + rightResults[r];
+                    } else if (c == '-') {
+                        results[count++] = leftResults[l] - rightResults[r];
+                    } else if (c == '*') {
+                        results[count++] = leftResults[l] * rightResults[r];
+                    }
+                }
+            }
+            free(leftSub);
+            free(rightSub);
+            free(leftResults);
+            free(rightResults);
+        }
+    }
+    if (isNumber) {
+        results[0] = atoi(expression);
+        count = 1;
+    }
+    *returnSize = count;
+    return results;
+}
+int main() {
+    char exp[] = "2*3-4*5";
+    int size = 0;
+    int* output = diffWaysToCompute(exp, &size);
+    printf("Possible results: [");
+    for (int i = 0; i < size; i++) {
+        printf("%d", output[i]);
+        if (i < size - 1) printf(", ");
+    }
+    printf("]\n");
+    free(output);
+    return 0;
+}
