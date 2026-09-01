@@ -1,0 +1,23 @@
+#include <stdio.h>
+int countDigitOne(int n) {
+    int count = 0;
+    for (long long i = 1; i <= n; i *= 10) {
+        long long divider = i * 10;
+        count += (n / divider) * i;
+        long long remainder = n % divider;
+        if (remainder >= i) {
+            if (remainder >= 2 * i) {
+                count += i;
+            } 
+            else {
+                count += (remainder - i + 1);
+            }
+        }
+    }
+    return count;
+}
+int main() {
+    int n = 13;
+    printf("Total 1s up to %d: %d\n", n, countDigitOne(n)); 
+    return 0;
+}
