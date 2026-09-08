@@ -1,0 +1,47 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+const char* LESS_THAN_20[] = {"", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", 
+                              "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"};
+const char* TENS[] = {"", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"};
+const char* THOUSANDS[] = {"", "Thousand", "Million", "Billion"};
+void append(char* dest, const char* src) {
+    if (strlen(dest) > 0) {
+        strcat(dest, " ");
+    }
+    strcat(dest, src);
+}
+void convertThreeDigits(int num, char* chunk) {
+    if (num >= 100) {
+        append(chunk, LESS_THAN_20[num / 100]);
+        append(chunk, "Hundred");
+        num %= 100;
+    }
+    if (num >= 20) {
+        append(chunk, TENS[num / 10]);
+        num %= 10;
+    }
+    if (num > 0) {
+        append(chunk, LESS_THAN_20[num]);
+    }
+}
+char* numberToWords(int num) {
+    if (num == 0) return "Zero";
+    char* result = (char*)malloc(1000 * sizeof(char));
+    result[0] = '\0';
+    int values[] = {1000000000, 1000000, 1000, 1};
+    int scales[] = {3, 2, 1, 0}; 
+    for (int i = 0; i < 4; i++) {
+        int current_chunk = num / values[i];
+        if (current_chunk > 0) {
+            char chunk_words[200] = "";
+            convertThreeDigits(current_chunk, chunk_words);
+            append(result, chunk_words);
+            if (scales[i] > 0) {
+                append(result, THOUSANDS[scales[i]]);
+            }
+        }
+        num %= values[i]; 
+    }
+    return result;
+}
