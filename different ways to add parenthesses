@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+int compute(int a, int b, char op) {
+    if (op == '+') return a + b;
+    if (op == '-') return a - b;
+    if (op == '*') return a * b;
+    return 0;
+}
+int* diffWaysToCompute(char* expression, int* returnSize) {
+    int len = strlen(expression);
+    int* results = (int*)malloc(2000 * sizeof(int));
+    int count = 0;
+    int isNumber = 1;
+    for (int i = 0; i < len; i++) {
+        char c = expression[i];
+        if (c == '+' || c == '-' || c == '*') {
+            isNumber = 0; 
+            char leftSub[21] = {0};
+            char rightSub[21] = {0};
+            strncpy(leftSub, expression, i);
+            strcpy(rightSub, expression + i + 1);
+            int leftSize = 0, rightSize = 0;
+            int* leftResults = diffWaysToCompute(leftSub, &leftSize);
+            int* rightResults = diffWaysToCompute(rightSub, &rightSize);
+            for (int l = 0; l < leftSize; l++) {
+                for (int r = 0; r < rightSize; r++) {
+                    results[count++] = compute(leftResults[l], rightResults[r], c);
+                }
+            }
+            free(leftResults);
+            free(rightResults);
+        }
+    }
+    if (isNumber) {
+        results[count++] = atoi(expression);
+    }
+    *returnSize = count;
+    return results;
+}
