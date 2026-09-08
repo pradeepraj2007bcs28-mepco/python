@@ -1,0 +1,25 @@
+#include <stdio.h>
+int countGoodNumbers(long long n) {
+    long long mod = 1000000007;
+    long long odd_pos = n / 2;
+    long long even_pos = n - odd_pos;
+    long long even_choices = 1;
+    long long odd_choices = 1;
+    long long base5 = 5;
+    while (even_pos > 0) {
+        if (even_pos % 2 == 1) {
+            even_choices = (even_choices * base5) % mod;
+        }
+        base5 = (base5 * base5) % mod;
+        even_pos /= 2;
+    }
+    long long base4 = 4;
+    while (odd_pos > 0) {
+        if (odd_pos % 2 == 1) {
+            odd_choices = (odd_choices * base4) % mod;
+        }
+        base4 = (base4 * base4) % mod;
+        odd_pos /= 2;
+    }
+    return (int)((even_choices * odd_choices) % mod);
+}
